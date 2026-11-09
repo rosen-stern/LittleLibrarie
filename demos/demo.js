@@ -1,5 +1,5 @@
 // connect to the party server
-await p5party.connect("wss://demoserver.p5party.org", "little_librarie_demo_lis534");
+await p5party.connect("wss://demoserver.p5party.org", "little_librarie_lis534_demo");
 
 // load the shared object
 // and provide starting values for the object to be used
