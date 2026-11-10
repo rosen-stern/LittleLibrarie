@@ -21,23 +21,47 @@ const shared = await p5party.loadShared("shared", { x: 100, y: 100, books:[] });
 // TO DO: track position/physics of book in shared?
 const Book = class {
 	constructor(id, length, height, title, author, genre, x, y) {
+
+		// Book attributes copied here in case we want to reference them from this
+		// instance of the object directly (as opposed to from shared)
 		this.id = id;
-		this.sprite = new Sprite();
-		this.sprite.width = length;
-		this.sprite.height = height;
-		this.sprite.grabbable = true;
+		this.length = length;
+		this.height = height;
 		this.title = title;
 		this.author = author;
 		this.genre = genre;
+
+		// Generate book art here using title+author+genre
+		let img = renderBookArt(this.genre);
+
+		// Use attributes to prepare Book for rendering
+		let bookSprite = new Sprite();
+		bookSprite.draw = function () {
+			fill(bookSprite.color);
+			rect(-bookSprite.width/2, -bookSprite.height/2, bookSprite.width, bookSprite.height);
+			image(bookSprite.img);
+		};
+		this.sprite = bookSprite;
+		this.sprite.width = length;
+		this.sprite.height = height;
+		this.sprite.img = img;
+		this.sprite.color = genre;
+		this.sprite.grabbable = true;
 		this.sprite.x = x;
 		this.sprite.y = y;
-		// Generate book art here using title+author+genre
-		// sprite.img = render_book_art()
+		//this.sprite.color = "#FF000020";
 	}
 	update() {
 		// Update sprite if its status changes (e.g. give to patron)
 	}
 };
+
+function renderBookArt(genre) {
+	if (genre == "red") { return '@'; }
+	else if (genre == "green") { return load('assets/genrePattern.png'); }
+	else if (genre == "orange") { return '$'; }
+	return 'O';
+}
 
 
 // Set up canvas and world
@@ -70,13 +94,13 @@ ground.physics = STATIC;
 // Set up books
 // Maybe this should live inside a function called by the host to generate the books?
 shared.books = {
-	1: { id: 1, length: 10, height: 30, title: "", author: "", genre: "", x: 0, y: 0 },
-	2: { id: 2, length: 10, height: 30, title: "", author: "", genre: "", x: 0, y: 0 }
+	1: { id: 1, length: 20, height: 50, title: "", author: "", genre: "green", x: 10, y: -20 },
+	2: { id: 2, length: 15, height: 40, title: "", author: "", genre: "red", x: 0, y: 0 }
 }
 var books = [];
 for (var key in shared.books) {
 	var b = shared.books[key];
-	books.push(new Book(b.id, b.length, b.height, b.title, b.author, b.genre, b.x, b.y))
+	books.push(new Book(b.id, b.length, b.height, b.title, b.author, b.genre, b.x, b.y));
 }
 
 

@@ -144,3 +144,12 @@ q5.update = function () {
 
 
 };
+
+//let img = load('assets/genrePattern.png');
+//q5.draw = function () {
+//	books.forEach(function (b, index) {
+//		fill('green');
+//		rect(0, 0, b.sprite.width, b.sprite.height);
+//		image(img, b.sprite.x, b.sprite.y);
+//	});
+//}
