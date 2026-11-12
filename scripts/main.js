@@ -1,68 +1,9 @@
-// get the room name from the query string
-const room = new URLSearchParams(location.search).get("room");
-console.log("room:", room);
-
-if (room) {
-  document.getElementById("room").value = room;
-}
-
-// connect to the party server
-await p5party.connect("wss://demoserver.p5party.org", "little_librarie_lis534", room);
+import { Book } from './book.js';
 
 // load the shared object
 // and provide starting values for the object to be used
 // if there are no clients already connected to the room
 const shared = await p5party.loadShared("shared", { x: 100, y: 100, books:[] });
-
-
-// Constructor for book sprite
-// This is for rendering the books and listening for clicks/grabs
-// The information keeping track of book attributes/status should stay in shared
-// TO DO: track position/physics of book in shared?
-const Book = class {
-	constructor(id, length, height, title, author, genre, x, y) {
-
-		// Book attributes copied here in case we want to reference them from this
-		// instance of the object directly (as opposed to from shared)
-		this.id = id;
-		this.length = length;
-		this.height = height;
-		this.title = title;
-		this.author = author;
-		this.genre = genre;
-
-		// Generate book art here using title+author+genre
-		let img = renderBookArt(this.genre);
-
-		// Use attributes to prepare Book for rendering
-		let bookSprite = new Sprite();
-		bookSprite.draw = function () {
-			fill(bookSprite.color);
-			rect(-bookSprite.width/2, -bookSprite.height/2, bookSprite.width, bookSprite.height);
-			image(bookSprite.img);
-		};
-		this.sprite = bookSprite;
-		this.sprite.width = length;
-		this.sprite.height = height;
-		this.sprite.img = img;
-		this.sprite.color = genre;
-		this.sprite.grabbable = true;
-		this.sprite.x = x;
-		this.sprite.y = y;
-		//this.sprite.color = "#FF000020";
-	}
-	update() {
-		// Update sprite if its status changes (e.g. give to patron)
-	}
-};
-
-function renderBookArt(genre) {
-	if (genre == "red") { return '@'; }
-	else if (genre == "green") { return load('assets/genrePattern.png'); }
-	else if (genre == "orange") { return '$'; }
-	return 'O';
-}
-
 
 // Set up canvas and world
 
