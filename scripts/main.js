@@ -1,4 +1,5 @@
 import { Book } from './book.js';
+import { Patron, requestsContainer } from './patron.js';
 
 // load the shared object
 // and provide starting values for the object to be used
@@ -30,6 +31,18 @@ let ground = new Sprite();
 ground.y = 240;
 ground.width = 660;
 ground.physics = STATIC;
+
+
+// GUI
+
+let requests = requestsContainer();
+requests.position(20, 40);
+requests.size(316, 500);
+
+var patron1 = new Patron(0, "teststring", "Trying some request text", [0]);
+var patron2 = new Patron(1, "teststring", "Another request", [0]);
+requests.appendChild(patron1.display());
+requests.appendChild(patron2.display());
 
 
 // Set up books

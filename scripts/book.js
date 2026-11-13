@@ -21,6 +21,8 @@ class Book extends class { constructor() { return new Sprite(); } } {
 		// Additional attributes
 		this.grabbed = false;
 		this.grabber = "";  // name of the user grabbing book
+		this.loaned = false;
+		this.patron = -1;   // ID of patron
 
 		// Generate book art here using title+author+genre
 		let img = renderBookArt(this.genre);
@@ -62,10 +64,33 @@ class Book extends class { constructor() { return new Sprite(); } } {
 		this.updateCallback = function () { console.log("Called updateCallback.") }
 
 	}
-	updateShared() {
+	updateToShared() {
 		// Update shared info if Book status changes (e.g. give to patron)
 		// Call callback function from here?
 		return null;
+	}
+	updateFromShared(info) {
+		if (info.fulfilled) {
+			this.grabbable = false;
+			this.loaned = true;
+			this.patron = info.patron;
+		}
+		else if (info.returned) {
+			this.grabbable = true;
+			this.loaned = false;
+			this.patron = -1;
+			// Add code to put in Return Bin
+		}
+		else if (info.grabbed) {
+			this.grabbable = false;
+			this.grabbed = true;
+			this.grabber = info.grabber;
+		}
+		else {
+			this.grabbable = true;
+			this.grabbed = false;
+			this.grabber = "";
+		}
 	}
 };
 
