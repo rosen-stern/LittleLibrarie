@@ -5,6 +5,7 @@ export { Book };
 // The information keeping track of book attributes/status should stay in shared
 // TO DO: track position/physics of book in shared?
 class Book extends class { constructor() { return new Sprite(); } } {
+	manager = null;
 	constructor(id, length, height, title, author, genre, x, y) {
 
 		super();
@@ -51,17 +52,26 @@ class Book extends class { constructor() { return new Sprite(); } } {
 			// Set stroke back to defaults for other objects after drawing book
 			stroke('');
 			strokeWeight(1);
-		}
+		};
 
 		this.update = function () {
 			if (this.joints.length > 0) {
-				if (this.grabbed == false) { this.updateCallback(); }
+				if (this.grabbed == false) { this.manager.selectBook(this); }
 				this.grabbed = true;
 			}
-			else { this.grabbed = false; }
-		}
+			else {
+				if (this.grabbed == true) { this.manager.deselect(); }
+				this.grabbed = false;
+			}
+		};
 
-		this.updateCallback = function () { console.log("Called updateCallback.") }
+		//this.updateCallback = function () { console.log("Called updateCallback.") };
+
+		this.testBook = function () { console.log("TEsting book"); }
+		this.checkOut = function () {
+			this.grabbable = false;
+			this.physicsType = 'STATIC';
+		}
 
 	}
 	updateToShared() {

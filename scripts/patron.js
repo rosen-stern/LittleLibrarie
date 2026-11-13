@@ -1,8 +1,12 @@
-export { Patron, requestsContainer };
+export { Patron };
 
 class Patron {
     element = null;
     detector = null;
+    mouseover = false;
+    mousedownWhileHover = false;
+    manager = null;
+    fulfilled = false;
     constructor(ID, imageString, request, data) {
         this.ID = ID;
         this.imageString = imageString;
@@ -24,27 +28,41 @@ class Patron {
         el.style.margin = '6px';
         el.style.padding = '0 0 0 8px';
         el.style.minWidth = '300px';
+        el.addEventListener('mouseover', () => {
+            if (this.fulfilled) { return; }
+            else { el.style.backgroundColor = 'cyan'; }
+            this.mouseover = true;
+            this.manager.checkForBook();
+        });
+        el.addEventListener('mouseout', () => {
+            if (this.fulfilled) { return; }
+            else { el.style.backgroundColor = 'white'; }
+            this.mouseover = false;
+            this.mousedownWhileHover = false;
+            this.manager.clearAnySuggested();
+        });
+        el.addEventListener('mousedown', () => {
+            if (this.fulfilled) { return; }
+            this.mousedownWhileHover = true;
+        });
+        el.addEventListener('mouseup', () => {
+            if (this.fulfilled) { return; }
+            if (this.mousedownWhileHover) { return; }
+            else { this.manager.tryFulfillingRequest(this); }
+        });
         this.element = el;
         let img = createImg('assets/genrePattern.png');
         img.style.margin = '16px';
         this.element.appendChild(img);
         this.element.appendChild(createEl('div', this.request));
-        //let box = new Sprite(0, 0, 300, 100, STATIC);
-        //box.color = '#FFFFFF20';
         return this.element;
+    }
+    fulfillRequest() {
+        this.element.style.backgroundColor = '#FFFFFF40';
+        this.fulfilled = true;
     }
 }
 
 function renderPatronArt(imageString) {
     return load('assets/genrePattern.png');
-}
-
-function requestsContainer() {
-    let requests = createEl('div', '');
-    requests.style.display = 'flex';
-    requests.style.flexWrap = 'wrap';
-    requests.style.alignContent = 'start';
-    requests.style.justifyContent = 'center';
-    requests.style.border = '2px solid #FFFFFF20';  // Remove this after debugging?
-    return requests;
 }
