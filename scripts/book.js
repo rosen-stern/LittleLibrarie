@@ -4,8 +4,11 @@ export { Book };
 // This is for rendering the books and listening for clicks/grabs
 // The information keeping track of book attributes/status should stay in shared
 // TO DO: track position/physics of book in shared?
-const Book = class {
+class Book extends class { constructor() { return new Sprite(); } } {
+	manager = null;
 	constructor(id, length, height, title, author, genre, x, y) {
+
+		super();
 
 		// Book attributes copied here in case we want to reference them from this
 		// instance of the object directly (as opposed to from shared)
@@ -16,28 +19,88 @@ const Book = class {
 		this.author = author;
 		this.genre = genre;
 
+		// Additional attributes
+		this.grabbed = false;
+		this.grabber = "";  // name of the user grabbing book
+		this.loaned = false;
+		this.patron = -1;   // ID of patron
+
 		// Generate book art here using title+author+genre
 		let img = renderBookArt(this.genre);
 
-		// Use attributes to prepare Book for rendering
-		let bookSprite = new Sprite();
-		bookSprite.draw = function () {
-			fill(bookSprite.color);
-			rect(-bookSprite.width/2, -bookSprite.height/2, bookSprite.width, bookSprite.height);
-			image(bookSprite.img);
+		// Set Sprite attributes needed for Book
+		this.width = length;
+		this.color = genre;
+		this.grabbable = true;
+		this.x = x;
+		this.y = y;
+		this.img = img;
+
+		// Use attributes to render Book
+		this.draw = function () {
+			fill(this.genre);
+			if (this.grabbed) {
+				stroke('orange');
+				strokeWeight(5);
+			}
+			else {
+				stroke('black');
+				strokeWeight(1);
+			}
+			rect(-this.width / 2, -this.height / 2, this.width, this.height);
+			image(this.img);
+			// Set stroke back to defaults for other objects after drawing book
+			stroke('');
+			strokeWeight(1);
 		};
-		this.sprite = bookSprite;
-		this.sprite.width = length;
-		this.sprite.height = height;
-		this.sprite.img = img;
-		this.sprite.color = genre;
-		this.sprite.grabbable = true;
-		this.sprite.x = x;
-		this.sprite.y = y;
-		//this.sprite.color = "#FF000020";
+
+		this.update = function () {
+			if (this.joints.length > 0) {
+				if (this.grabbed == false) { this.manager.selectBook(this); }
+				this.grabbed = true;
+			}
+			else {
+				if (this.grabbed == true) { this.manager.deselect(); }
+				this.grabbed = false;
+			}
+		};
+
+		//this.updateCallback = function () { console.log("Called updateCallback.") };
+
+		this.testBook = function () { console.log("TEsting book"); }
+		this.checkOut = function () {
+			this.grabbable = false;
+			this.physicsType = 'STATIC';
+		}
+
 	}
-	update() {
-		// Update sprite if its status changes (e.g. give to patron)
+	updateToShared() {
+		// Update shared info if Book status changes (e.g. give to patron)
+		// Call callback function from here?
+		return null;
+	}
+	updateFromShared(info) {
+		if (info.fulfilled) {
+			this.grabbable = false;
+			this.loaned = true;
+			this.patron = info.patron;
+		}
+		else if (info.returned) {
+			this.grabbable = true;
+			this.loaned = false;
+			this.patron = -1;
+			// Add code to put in Return Bin
+		}
+		else if (info.grabbed) {
+			this.grabbable = false;
+			this.grabbed = true;
+			this.grabber = info.grabber;
+		}
+		else {
+			this.grabbable = true;
+			this.grabbed = false;
+			this.grabber = "";
+		}
 	}
 };
 
