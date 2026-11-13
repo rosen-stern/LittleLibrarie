@@ -1,4 +1,6 @@
 import { Book } from './book.js';
+import { me, guests, showCursors, updateMyCursorPosition } from './cursors.js';
+
 
 // load the shared object
 // and provide starting values for the object to be used
@@ -57,6 +59,7 @@ canvas.addEventListener("pointerdown", (e) => {
 
 });
 
+
 q5.update = function () {
 	background('skyblue');
 	text('click to jump!', 0, -50);
@@ -68,5 +71,16 @@ q5.update = function () {
     currenty = shared.y;
     }
 
+	showCursors();
+
 	
 };
+
+
+p5.mouseMoved = function () {
+  updateMyCursorPosition();
+}
+
+p5.mouseDragged = function () {
+  updateMyCursorPosition();
+} 
