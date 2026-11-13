@@ -23,9 +23,26 @@ const Book = class {
 		let bookSprite = new Sprite();
 		bookSprite.draw = function () {
 			fill(bookSprite.color);
+			if (bookSprite.grabbed) {
+				stroke('orange');
+				strokeWeight(5);
+			}
+			else {
+				stroke('black');
+				strokeWeight(1);
+			}
 			rect(-bookSprite.width/2, -bookSprite.height/2, bookSprite.width, bookSprite.height);
 			image(bookSprite.img);
+			// Set stroke back to defaults for other objects after drawing book
+			stroke('');
+			strokeWeight(1);
 		};
+		bookSprite.update = function () {
+			if (bookSprite.joints.length > 0) {
+				bookSprite.grabbed = true;
+			}
+			else { bookSprite.grabbed = false; }
+		}
 		this.sprite = bookSprite;
 		this.sprite.width = length;
 		this.sprite.height = height;
@@ -34,7 +51,10 @@ const Book = class {
 		this.sprite.grabbable = true;
 		this.sprite.x = x;
 		this.sprite.y = y;
-		//this.sprite.color = "#FF000020";
+
+		// Additional attributes
+		this.sprite.grabbed = false;
+		this.grabber = "";  // name of the user grabbing book
 	}
 	update() {
 		// Update sprite if its status changes (e.g. give to patron)
