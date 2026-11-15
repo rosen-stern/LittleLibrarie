@@ -60,6 +60,7 @@ class Patron {
     fulfillRequest() {
         this.element.style.backgroundColor = '#FFFFFF40';
         this.fulfilled = true;
+        console.log("Patron request fulfilled")
     }
 }
 

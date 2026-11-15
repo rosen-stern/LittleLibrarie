@@ -30,6 +30,7 @@ class LibraryManager {
         console.log("Attempting to fulfill patron request");
         if (this.suggestedBook == null) { return false; }
         else {
+            console.log("Fulfilling request");
             this.suggestedBook.checkOut();
             patron.fulfillRequest(this.suggestedBook);
             this.clearAnySuggested();
