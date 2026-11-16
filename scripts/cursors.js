@@ -5,66 +5,79 @@ let me = await p5party.loadMyShared({ x: 200, y: 200 });
 
 let guests = await p5party.loadGuestShareds();
 
+var guestsNumber = guests.length;
 
 
 
 q5.setup = function () {
-me.id = uuid();
-setMyScreenName();
-setMyPlayerColor();
+  me.id = uuid();
+  setMyScreenName();
+  setMyPlayerColor();
 
 }
 
+async function checkGuestNumber() {
+  if (guestsNumber != guests.length) {
+    guests = await p5party.loadGuestShareds();
+  }
+}
 
-function showCursors(){
 
- fill(me.color);
+async function showCursors() {
+
+ await checkGuestNumber();
+
+  fill(me.color);
   ellipse(me.x, me.y, 15, 15);
 
-      // draw each guests cursor
+  // draw each guests cursor
   for (const p of guests) {
 
-    if(p.id != me.id){
+    if (p.id != me.id) {
       fill('white');
-      rect(p.x-textWidth(p.screenname)/2-10, p.y+15, textWidth(p.screenname)+20, 15);
-    	
+      rect(p.x - textWidth(p.screenname) / 2 - 10, p.y + 15, textWidth(p.screenname) + 20, 15);
+
       fill('black');
-      text(p.screenname, p.x-textWidth(p.screenname)/2, p.y+25);
+      text(p.screenname, p.x - textWidth(p.screenname) / 2, p.y + 25);
 
       fill(p.color);
       ellipse(p.x, p.y, 20, 20);
     }
   }
-  
+
 
 }
 
 
-function updateMyCursorPosition(){
-me.x = mouseX;
+function updateMyCursorPosition() {
+  me.x = mouseX;
   me.y = mouseY;
 }
 
 
-function setMyScreenName(name){
-var localStorageScreenName = localStorage.getItem('screenname');
-    
-if(localStorageScreenName){
- me.screenname = localStorageScreenName;
-} else {
+function setMyScreenName(name) {
+  var localStorageScreenName = localStorage.getItem('screenname');
+
+  me.screenname = "guest #" + me.id.substring(0, 4);
+
+  if (localStorageScreenName) {
+    me.screenname = localStorageScreenName;
+  } else {
     me.screenname = prompt("Please enter your screen name:", "guest #" + me.id.substring(0, 4));
-}
- 
+  }
+
 }
 
-function setMyPlayerColor(color){
-    var localStorageColor = localStorage.getItem('playerColor');
+function setMyPlayerColor(color) {
+  var localStorageColor = localStorage.getItem('playerColor');
 
-    if(localStorageColor){
-        me.color = localStorageColor;
-        console.log("my color is: " + me.color);
-    } else {
-        me.color = prompt("Please enter your player color:", "#5393b8");
-    }
+  me.color = "#5393b8";
+
+  if (localStorageColor) {
+    me.color = localStorageColor;
+    console.log("my color is: " + me.color);
+  } else {
+    me.color = prompt("Please enter your player color:", "#5393b8");
+  }
 }
 
