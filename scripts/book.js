@@ -49,9 +49,6 @@ class Book extends class { constructor() { return new Sprite(); } } {
 			}
 			rect(-this.width / 2, -this.height / 2, this.width, this.height);
 			image(this.img);
-			// Set stroke back to defaults for other objects after drawing book
-			stroke('');
-			strokeWeight(0);
 		};
 
 		this.update = function () {
