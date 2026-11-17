@@ -1,6 +1,6 @@
+export {room}
 // get the room name from the query string
 const room = new URLSearchParams(location.search).get("room");
-console.log("room:", room);
 
 
 // connect to the party server
