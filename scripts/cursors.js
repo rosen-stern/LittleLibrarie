@@ -41,6 +41,7 @@ async function checkGuestNumber() {
 
 
 async function showCursors() {
+  strokeWeight(0);
 
  await checkGuestNumber();
 
