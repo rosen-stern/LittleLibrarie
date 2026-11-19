@@ -7,7 +7,7 @@ import { me, guests, showCursors, updateMyCursorPosition } from './cursors.js';
 // load the shared object
 // and provide starting values for the object to be used
 // if there are no clients already connected to the room
-const shared = await p5party.loadShared("shared", { x: 100, y: 100, books:[], patrons:[] });
+const shared = await p5party.loadShared("shared", { x: 100, y: 100, books:[], patrons:[], updateCount:0 });
 
 // Set up canvas and world
 
@@ -69,7 +69,7 @@ q5.update = function () {
 
 	showCursors();
 
-	
+    libManager.update();
 };
 
 

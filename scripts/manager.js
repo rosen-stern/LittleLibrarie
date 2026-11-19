@@ -4,9 +4,16 @@ export { LibraryManager, requestsContainer }
 
 class LibraryManager {
 
+    // Networking
     shared = null;
-    patrons = [];
-    books = [];
+    isHost = false;
+    myID = null;
+    playerIDs = [];
+    lastUpdateCount = 0;
+
+    // Library stuff
+    patrons = {};
+    books = {};
     selectedBook = null;
     suggestedBook = null;
     requestsBox = null;
@@ -14,9 +21,10 @@ class LibraryManager {
     constructor(sharedData, isHost) {
 
         this.shared = sharedData;
+        this.isHost = isHost;
 
         // If player is host, initialize sharedData
-        if (isHost) {
+        if (this.isHost) {
             console.log("Player is host. Generating shared data via LibraryManager")
             generatePatrons(this.shared, 2);
             generateBooks(this.shared, 5);
@@ -45,11 +53,13 @@ class LibraryManager {
     }
     addPatron(patron) {
         patron.manager = this;
-        this.patrons.push(patron);
+        //this.patrons.push(patron);
+        this.patrons[patron.ID] = patron;
         this.requestsBox.appendChild(patron.display());
     }
     addBook(book) {
-        this.books.push(book);
+        //this.books.push(book);
+        this.books[book.id] = book;
         book.manager = this;
     }
     checkForBook() {
@@ -65,26 +75,54 @@ class LibraryManager {
         if (this.suggestedBook == null) { return false; }
         else {
             console.log("Fulfilling request");
+            // Update Shared info
+            this.shared.books[this.suggestedBook.id].checkedout = true;
+            this.shared.patrons[patron.ID].fulfilled = this.suggestedBook.id;
+            this.shared.updateCount += 1;
+            // Then update local info
             this.suggestedBook.checkOut();
-            patron.fulfillRequest(this.suggestedBook);
+            patron.fulfillRequest();  // patron.fulfillRequest(this.suggestedBook);
             this.clearAnySuggested();
-            // Add code to update Shared info
         }
         return;
     }
-    selectBook(book) { this.selectedBook = book; }
-    deselect() { this.selectedBook = null; }
+    selectBook(book) {
+        this.shared.books[book.id].selected = true;
+        this.shared.updateCount += 1;
+        console.log("update count:", this.shared.updateCount);
+        this.selectedBook = book;
+    }
+    deselect() {
+        this.shared.books[this.selectedBook.id].selected = false;
+        this.selectedBook = null;
+    }
+    update() {
+        if (this.shared.updateCount > this.lastUpdateCount) {
+            this.lastUpdateCount = this.shared.updateCount;
+            for (var i in this.patrons) {
+                let p = this.patrons[i];
+                if (this.shared.patrons[p.ID].fulfilled > -1) {
+                    let bookID = this.shared.patrons[p.ID].fulfilled;
+                    let b = this.books[bookID];
+                    b.checkOut();
+                    p.fulfillRequest();
+                    console.log("Updated patron:", p.ID);
+                    console.log("Updated book:", b.id);
+                }
+            }
+        }
+    }
 }
 
 function generatePatron(i) {
-    return { id: i, image: "z", request: "Trying some request text", data: [0] }
+    return { id: i, image: "z", request: "Trying some request text", fulfilled: -1, patience: 100, score: -1 }
 }
 
 function generatePatrons(shared, n = -1) {
     if (n == -1) {
         shared.patrons = {
-            1: { id: 1, image: "teststr", request: "Trying some request text", data: [0] },
-            2: { id: 2, image: "default", request: "Another request", data: [0] }
+            1: { id: 1, image: "teststr", request: "Trying some request text", fulfilled: -1, patience: 100, score: -1 },
+            2: { id: 2, image: "default", request: "Another request", fulfilled: -1, patience: 100, score: -1 }
         };
     }
     else {
@@ -107,15 +145,17 @@ function generateBook(i) {
         id: i,
         length: (getRandomInt(3) + 2) * 20,
         height: (getRandomInt(3) + 3) * 40,
-        title: "", author: "", genre: "green", x: 10, y: -80
+        title: "", author: "", genre: "green", x: 10, y: -80,
+        selected: false,
+        checkedout: false
     }
 }
 
 function generateBooks(shared, n=-1) {
     if (n == -1) {
         shared.books = {
-            1: { id: 1, length: 20, height: 50, title: "", author: "", genre: "green", x: 10, y: -20 },
-            2: { id: 2, length: 15, height: 40, title: "", author: "", genre: "red", x: 0, y: 0 }
+            1: { id: 1, length: 20, height: 50, title: "", author: "", genre: "green", x: 10, y: -20, selected: false, checkedout: false },
+            2: { id: 2, length: 15, height: 40, title: "", author: "", genre: "red", x: 0, y: 0, selected: false, checkedout: false }
         }
     }
     else {
