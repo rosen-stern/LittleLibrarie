@@ -88,7 +88,7 @@ class LibraryManager {
         return;
     }
     selectBook(book) {
-        this.shared.books[book.id].selected = [this.me.id, ""];
+        this.shared.books[book.id].selected = [this.me.id, "", this.me.color];
         this.shared.updateCount += 1;
         console.log("update count:", this.shared.updateCount);
         console.log("Player ID:", this.me.id); 
@@ -96,7 +96,7 @@ class LibraryManager {
     }
     deselect() {
         if (this.selectedBook != null) {
-            this.shared.books[this.selectedBook.id].selected = ["", ""];
+            this.shared.books[this.selectedBook.id].selected = ["", "", ""];
             this.shared.updateCount += 1;
             console.log("update count:", this.shared.updateCount);
             this.selectedBook = null;
@@ -129,6 +129,7 @@ class LibraryManager {
                     if (this.shared.books[b.id].selected[1] == "yes") {
                         if (this.shared.books[b.id].selected[0] == this.me.id) {
                             console.log("Book selected by me. My ID:", this.me.id);
+                            b.strokeColorMe = this.me.color;
                         }
                         else {
                             console.log("Book selected by another player. Their ID:", this.shared.books[b.id].selected[0]);
@@ -137,6 +138,7 @@ class LibraryManager {
                             }
                             b.grabbable = false;
                             b.grabbedByOther = true;
+                            b.strokeColorOther = this.shared.books[b.id].selected[2];
                         }
                     }
                 }
@@ -193,8 +195,8 @@ function generateBook(i) {
 function generateBooks(shared, n=-1) {
     if (n == -1) {
         shared.books = {
-            1: { id: 1, length: 20, height: 50, title: "", author: "", genre: "green", x: 10, y: -20, selected: ["", ""], checkedout: false },
-            2: { id: 2, length: 15, height: 40, title: "", author: "", genre: "red", x: 0, y: 0, selected: ["", ""], checkedout: false }
+            1: { id: 1, length: 20, height: 50, title: "", author: "", genre: "green", x: 10, y: -20, selected: ["", "", ""], checkedout: false },
+            2: { id: 2, length: 15, height: 40, title: "", author: "", genre: "red", x: 0, y: 0, selected: ["", "", ""], checkedout: false }
         }
     }
     else {

@@ -7,6 +7,8 @@ export { Book };
 class Book extends class { constructor() { return new Sprite(); } } {
 	manager = null;
 	grabbedByOther = false;
+	strokeColorMe = null;
+	strokeColorOther = null;
 	constructor(id, length, height, title, author, genre, x, y) {
 
 		super();
@@ -41,11 +43,11 @@ class Book extends class { constructor() { return new Sprite(); } } {
 		this.draw = function () {
 			fill(this.genre);
 			if (this.grabbedByOther) {
-				stroke('orange');
+				stroke(this.strokeColorOther);
 				strokeWeight(5);
 			}
 			else if (this.grabbed) {
-				stroke('#10D0F0');
+				stroke(this.strokeColorMe);
 				strokeWeight(5);
 			}
 			else {
