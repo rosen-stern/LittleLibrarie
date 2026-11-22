@@ -1,5 +1,5 @@
 import { Patron } from './patron.js';
-import { Book } from './book.js';
+import { Book, genres, bookLengths, bookHeights } from './book.js';
 export { LibraryManager, requestsContainer }
 
 
@@ -155,8 +155,14 @@ class LibraryManager {
     }
 }
 
+
 function generatePatron(i) {
-    return { id: i, image: "z", request: "Trying some request text", fulfilled: -1, patience: 100, score: -1 }
+    let bookLength = getRandomInt(3);
+    let bookHeight = getRandomInt(3);
+    let bookGenre = genres[getRandomInt(4)];
+    let requestText = "A " + bookHeights[bookHeight] + " " + bookGenre + " " + bookLengths[bookLength];
+    let requestInfo = { length: bookLength, height: bookHeight, genre: bookGenre };
+    return { id: i, image: "z", request: requestText, requestInfo: requestInfo, fulfilled: -1, patience: 100, score: -1 }
 }
 
 function generatePatrons(shared, n = -1) {
@@ -186,7 +192,9 @@ function generateBook(i) {
         id: i,
         length: (getRandomInt(3) + 2) * 20,
         height: (getRandomInt(3) + 3) * 40,
-        title: "", author: "", genre: "green", x: 10, y: -80,
+        title: "", author: "",
+        genre: genres[getRandomInt(4)],
+        x: 10, y: -80,
         selected: false,
         checkedout: false
     }

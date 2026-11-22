@@ -1,4 +1,10 @@
-export { Book };
+export { Book, genres, bookLengths, bookHeights };
+
+
+let genres = ["red", "yellow", "green", "blue"];
+let bookLengths = ["novelette", "novel", "tome"];  //["short", "medium", "long"]
+let bookHeights = ["squat", "medium-height", "tall"];
+
 
 // Constructor for book sprite
 // This is for rendering the books and listening for clicks/grabs
