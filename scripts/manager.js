@@ -2,12 +2,12 @@ import { Patron } from './patron.js';
 import { Book } from './book.js';
 export { LibraryManager, requestsContainer }
 
+
 class LibraryManager {
 
     // Networking
     shared = null;
     isHost = false;
-    myID = null;
     playerIDs = [];
     lastUpdateCount = 0;
 
@@ -18,21 +18,22 @@ class LibraryManager {
     suggestedBook = null;
     requestsBox = null;
 
-    constructor(sharedData, isHost) {
+    constructor(sharedData, isHost, me) {
 
         this.shared = sharedData;
         this.isHost = isHost;
+        this.me = me;
 
         // If player is host, initialize sharedData
         if (this.isHost) {
-            console.log("Player is host. Generating shared data via LibraryManager")
+            console.log("Player is host. Generating shared data via LibraryManager");
             generatePatrons(this.shared, 2);
             generateBooks(this.shared, 5);
         }
 
         // Else, load data from sharedData
         else {
-            console.log("Player is guest. Loading shared data to LibraryManager")
+            console.log("Player is guest. Loading shared data to LibraryManager");
         }
 
         // Displaying of patron requests can be down client-side
@@ -79,22 +80,27 @@ class LibraryManager {
             this.shared.books[this.suggestedBook.id].checkedout = true;
             this.shared.patrons[patron.ID].fulfilled = this.suggestedBook.id;
             this.shared.updateCount += 1;
-            // Then update local info
-            this.suggestedBook.checkOut();
-            patron.fulfillRequest();  // patron.fulfillRequest(this.suggestedBook);
+            // Local info will be udpated in next call to update()
+            // For now, clear suggested so that the game doesn't think a book is still
+            // being suggested, and wait for update() to resolve this action.
             this.clearAnySuggested();
         }
         return;
     }
     selectBook(book) {
-        this.shared.books[book.id].selected = true;
+        this.shared.books[book.id].selected = [this.me.id, ""];
         this.shared.updateCount += 1;
         console.log("update count:", this.shared.updateCount);
+        console.log("Player ID:", this.me.id); 
         this.selectedBook = book;
     }
     deselect() {
-        this.shared.books[this.selectedBook.id].selected = false;
-        this.selectedBook = null;
+        if (this.selectedBook != null) {
+            this.shared.books[this.selectedBook.id].selected = ["", ""];
+            this.shared.updateCount += 1;
+            console.log("update count:", this.shared.updateCount);
+            this.selectedBook = null;
+        }
     }
     update() {
         if (this.shared.updateCount > this.lastUpdateCount) {
@@ -108,6 +114,39 @@ class LibraryManager {
                     p.fulfillRequest();
                     console.log("Updated patron:", p.ID);
                     console.log("Updated book:", b.id);
+                }
+            }
+            for (var i in this.books) {
+                let b = this.books[i];
+                // If book is flagged as selected find out which player should have control
+                if (this.shared.books[b.id].selected[0] != "") {
+                    // Only the host should resolve who has selected book
+                    if (this.isHost && (this.shared.books[b.id].selected[1] == "")) {
+                        this.shared.books[b.id].selected[1] = "yes";
+                        this.shared.updateCount += 1;
+                    }
+                    // After resolving player control (selected[1] -> 1), set book display properties and physics
+                    if (this.shared.books[b.id].selected[1] == "yes") {
+                        if (this.shared.books[b.id].selected[0] == this.me.id) {
+                            console.log("Book selected by me. My ID:", this.me.id);
+                        }
+                        else {
+                            console.log("Book selected by another player. Their ID:", this.shared.books[b.id].selected[0]);
+                            if (this.selectedBook != null) {
+                                if (this.selectedBook.id == b.id) { this.selectedBook = null; }
+                            }
+                            b.grabbable = false;
+                            b.grabbedByOther = true;
+                        }
+                    }
+                }
+                // If book flagged as deselected, free it up so anyone can grab it
+                else if (this.shared.books[b.id].selected[0] == "") {
+                    if (b.grabbedByOther) {
+                        console.log("Book deselected");
+                        b.grabbable = true;
+                        b.grabbedByOther = false;
+                    }
                 }
             }
         }
@@ -154,8 +193,8 @@ function generateBook(i) {
 function generateBooks(shared, n=-1) {
     if (n == -1) {
         shared.books = {
-            1: { id: 1, length: 20, height: 50, title: "", author: "", genre: "green", x: 10, y: -20, selected: false, checkedout: false },
-            2: { id: 2, length: 15, height: 40, title: "", author: "", genre: "red", x: 0, y: 0, selected: false, checkedout: false }
+            1: { id: 1, length: 20, height: 50, title: "", author: "", genre: "green", x: 10, y: -20, selected: ["", ""], checkedout: false },
+            2: { id: 2, length: 15, height: 40, title: "", author: "", genre: "red", x: 0, y: 0, selected: ["", ""], checkedout: false }
         }
     }
     else {

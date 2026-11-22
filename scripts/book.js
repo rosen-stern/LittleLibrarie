@@ -6,6 +6,7 @@ export { Book };
 // TO DO: track position/physics of book in shared?
 class Book extends class { constructor() { return new Sprite(); } } {
 	manager = null;
+	grabbedByOther = false;
 	constructor(id, length, height, title, author, genre, x, y) {
 
 		super();
@@ -39,8 +40,12 @@ class Book extends class { constructor() { return new Sprite(); } } {
 		// Use attributes to render Book
 		this.draw = function () {
 			fill(this.genre);
-			if (this.grabbed) {
+			if (this.grabbedByOther) {
 				stroke('orange');
+				strokeWeight(5);
+			}
+			else if (this.grabbed) {
+				stroke('#10D0F0');
 				strokeWeight(5);
 			}
 			else {

@@ -38,7 +38,7 @@ ground.physics = STATIC;
 
 // Manage books, patrons, and (some parts of) GUI
 
-let libManager = new LibraryManager(shared, p5party.isHost());
+let libManager = new LibraryManager(shared, p5party.isHost(), me);
 libManager.requestsBox.position(20, 40);
 libManager.requestsBox.size(316, 500);
 
