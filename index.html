@@ -9,7 +9,7 @@
   <link rel="stylesheet" type="text/css" href="style.css" />
 
 
-  <script type="module" src="scripts/title-page.js"></script>
+  <script type="module" src="scripts/index-page.js"></script>
 
 
 </head>
@@ -18,15 +18,21 @@
 
   <h1>Little Librarie</h1>
 
-      <input type="text" id="room" name="room" value="main" />
-      <button onclick="joinRoom()">Join Room</button>
+  <div id="new-player-popup">
     
+    <div id="new-player-form">
+      <label for="room">Room:</label>
+      <input type="text" id="room" name="room" value=""/>    
 
+      <label for="screenName">Screen Name:</label>
       <input type="text" id="screenName" name="screenName" value="" />
-<button onclick="setScreenName()">Set Screen Name</button>
 
+  <label for="playerColor">Player Color:</label>
   <input type="color" id="playerColor" name="playerColor" value="#e66465" />
-<button onclick="setPlayerColor()">Set Player Color</button>
+
+<button onclick="joinRoom()">Join Room</button>
+</div>
+</div>
 
 </body>
 

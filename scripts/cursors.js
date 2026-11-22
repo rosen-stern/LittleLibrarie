@@ -1,5 +1,7 @@
-import { v4 as uuid } from "https://unpkg.com/uuid@14.0.3/dist/index.js"; //UUID generator to give every player a unique ID
+import { room } from './server-connection.js';
 export { me, guests, showCursors, updateMyCursorPosition };
+
+
 
 let me = await p5party.loadMyShared({ x: 200, y: 200 });
 
@@ -7,12 +9,27 @@ let guests = await p5party.loadGuestShareds();
 
 var guestsNumber = guests.length;
 
+  var localStorageScreenName = localStorage.getItem('screenName');
+
+  var localStorageColor = localStorage.getItem('playerColor');
+  
+    var localStorageID = localStorage.getItem('myID');
+
 
 
 q5.setup = function () {
-  me.id = uuid();
-  setMyScreenName();
-  setMyPlayerColor();
+  // me.id = localStorageID;
+  // me.screenName = "guest #" + me.id.substring(0, 4);
+  // me.color = "#298fc2";
+
+
+  if (!localStorageScreenName || !localStorageColor) {
+  window.location.replace("index.html"+"?room="+room);
+  }
+  me.id = localStorageID;
+    me.screenName = localStorageScreenName;
+    me.color = localStorageColor;
+
 
 }
 
@@ -24,27 +41,32 @@ async function checkGuestNumber() {
 
 
 async function showCursors() {
+  strokeWeight(0);
 
  await checkGuestNumber();
 
-  fill(me.color);
-  ellipse(me.x, me.y, 15, 15);
 
   // draw each guests cursor
   for (const p of guests) {
 
     if (p.id != me.id) {
       fill('white');
-      rect(p.x - textWidth(p.screenname) / 2 - 10, p.y + 15, textWidth(p.screenname) + 20, 15);
+      rect(p.x - textWidth(p.screenName) / 2 - 10, p.y + 15, textWidth(p.screenName) + 20, 15);
 
       fill('black');
-      text(p.screenname, p.x - textWidth(p.screenname) / 2, p.y + 25);
+      text(p.screenName, p.x - textWidth(p.screenName) / 2, p.y + 25);
+
+
+      strokeWeight(1);
+      stroke('black');
 
       fill(p.color);
-      ellipse(p.x, p.y, 20, 20);
+      ellipse(p.x, p.y, 15, 15);
     }
   }
 
+  fill(me.color);
+  ellipse(me.x, me.y, 15, 15);
 
 }
 
@@ -55,29 +77,5 @@ function updateMyCursorPosition() {
 }
 
 
-function setMyScreenName(name) {
-  var localStorageScreenName = localStorage.getItem('screenname');
 
-  me.screenname = "guest #" + me.id.substring(0, 4);
-
-  if (localStorageScreenName) {
-    me.screenname = localStorageScreenName;
-  } else {
-    me.screenname = prompt("Please enter your screen name:", "guest #" + me.id.substring(0, 4));
-  }
-
-}
-
-function setMyPlayerColor(color) {
-  var localStorageColor = localStorage.getItem('playerColor');
-
-  me.color = "#5393b8";
-
-  if (localStorageColor) {
-    me.color = localStorageColor;
-    console.log("my color is: " + me.color);
-  } else {
-    me.color = prompt("Please enter your player color:", "#5393b8");
-  }
-}
 

@@ -64,9 +64,6 @@ class Book extends class { constructor() { return new Sprite(); } } {
 			image(this.img);
 			image(this.img, -12, 0);
 			image(this.img, 12, 0);
-			// Set stroke back to defaults for other objects after drawing book
-			stroke('');
-			strokeWeight(1);
 		};
 
 		this.update = function () {
