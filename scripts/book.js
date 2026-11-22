@@ -62,6 +62,8 @@ class Book extends class { constructor() { return new Sprite(); } } {
 			}
 			rect(-this.width / 2, -this.height / 2, this.width, this.height);
 			image(this.img);
+			image(this.img, -12, 0);
+			image(this.img, 12, 0);
 			// Set stroke back to defaults for other objects after drawing book
 			stroke('');
 			strokeWeight(1);
@@ -121,8 +123,13 @@ class Book extends class { constructor() { return new Sprite(); } } {
 };
 
 function renderBookArt(genre) {
-	if (genre == "red") { return '@'; }
-	else if (genre == "green") { return load('assets/genrePattern.png'); }
-	else if (genre == "orange") { return '$'; }
-	return 'O';
+	//if (genre == "red") { return '@'; }
+	//else if (genre == "green") { return load('assets/genrePattern.png'); }
+	//else if (genre == "orange") { return '$'; }
+	//return 'O';
+	if (genre == "red") { return load('assets/genrePattern1.png'); }
+	else if (genre == "yellow") { return load('assets/genrePattern2.png'); }
+	else if (genre == "green") { return load('assets/genrePattern3.png'); }
+	else if (genre == "blue") { return load('assets/genrePattern4.png'); }
+	return load('assets/genrePattern.png');;
 }
