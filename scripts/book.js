@@ -1,4 +1,10 @@
-export { Book };
+export { Book, genres, bookLengths, bookHeights };
+
+
+let genres = ["red", "yellow", "green", "blue"];
+let bookLengths = ["novelette", "novel", "tome"];  //["short", "medium", "long"]
+let bookHeights = ["squat", "medium-height", "tall"];
+
 
 // Constructor for book sprite
 // This is for rendering the books and listening for clicks/grabs
@@ -6,6 +12,9 @@ export { Book };
 // TO DO: track position/physics of book in shared?
 class Book extends class { constructor() { return new Sprite(); } } {
 	manager = null;
+	grabbedByOther = false;
+	strokeColorMe = null;
+	strokeColorOther = null;
 	constructor(id, length, height, title, author, genre, x, y) {
 
 		super();
@@ -39,8 +48,12 @@ class Book extends class { constructor() { return new Sprite(); } } {
 		// Use attributes to render Book
 		this.draw = function () {
 			fill(this.genre);
-			if (this.grabbed) {
-				stroke('orange');
+			if (this.grabbedByOther) {
+				stroke(this.strokeColorOther);
+				strokeWeight(5);
+			}
+			else if (this.grabbed) {
+				stroke(this.strokeColorMe);
 				strokeWeight(5);
 			}
 			else {
@@ -49,6 +62,8 @@ class Book extends class { constructor() { return new Sprite(); } } {
 			}
 			rect(-this.width / 2, -this.height / 2, this.width, this.height);
 			image(this.img);
+			image(this.img, -12, 0);
+			image(this.img, 12, 0);
 		};
 
 		this.update = function () {
@@ -66,7 +81,10 @@ class Book extends class { constructor() { return new Sprite(); } } {
 
 		this.testBook = function () { console.log("TEsting book"); }
 		this.checkOut = function () {
+			console.log("Checking out book")
 			this.grabbable = false;
+			this.x = -4000;
+			this.y = -4000;
 			this.physicsType = 'STATIC';
 		}
 
@@ -102,8 +120,13 @@ class Book extends class { constructor() { return new Sprite(); } } {
 };
 
 function renderBookArt(genre) {
-	if (genre == "red") { return '@'; }
-	else if (genre == "green") { return load('assets/genrePattern.png'); }
-	else if (genre == "orange") { return '$'; }
-	return 'O';
+	//if (genre == "red") { return '@'; }
+	//else if (genre == "green") { return load('assets/genrePattern.png'); }
+	//else if (genre == "orange") { return '$'; }
+	//return 'O';
+	if (genre == "red") { return load('assets/genrePattern1.png'); }
+	else if (genre == "yellow") { return load('assets/genrePattern2.png'); }
+	else if (genre == "green") { return load('assets/genrePattern3.png'); }
+	else if (genre == "blue") { return load('assets/genrePattern4.png'); }
+	return load('assets/genrePattern.png');;
 }

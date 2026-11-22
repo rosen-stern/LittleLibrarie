@@ -51,7 +51,7 @@ class Patron {
             else { this.manager.tryFulfillingRequest(this); }
         });
         this.element = el;
-        let img = createImg('assets/genrePattern.png');
+        let img = createImg('assets/avatar.png');
         img.style.margin = '16px';
         this.element.appendChild(img);
         this.element.appendChild(createEl('div', this.request));
@@ -60,6 +60,7 @@ class Patron {
     fulfillRequest() {
         this.element.style.backgroundColor = '#FFFFFF40';
         this.fulfilled = true;
+        console.log("Patron request fulfilled")
     }
 }
 
