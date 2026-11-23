@@ -3,11 +3,15 @@ import { Book, genres, bookLengths, bookHeights } from './book.js';
 export { LibraryManager, requestsContainer }
 
 
+let trackObjectsWithHost = false;
+
+
 class LibraryManager {
 
     // Networking
     shared = null;
     isHost = false;
+    me = null;
     playerIDs = [];
     lastUpdateCount = 0;
 
@@ -117,37 +121,69 @@ class LibraryManager {
                 }
             }
             for (var i in this.books) {
+
                 let b = this.books[i];
-                // If book is flagged as selected find out which player should have control
-                if (this.shared.books[b.id].selected[0] != "") {
-                    // Only the host should resolve who has selected book
-                    if (this.isHost && (this.shared.books[b.id].selected[1] == "")) {
-                        this.shared.books[b.id].selected[1] = "yes";
-                        this.shared.updateCount += 1;
+
+                // If book flagged as deselected, free it up so anyone can grab it
+                if (this.shared.books[b.id].selected[0] == "") {
+                    if (b.grabbedByOther) {
+                        console.log("Book deselected");
+                        b.grabbable = true;
+                        b.grabbedByOther = false;
                     }
-                    // After resolving player control (selected[1] -> 1), set book display properties and physics
-                    if (this.shared.books[b.id].selected[1] == "yes") {
-                        if (this.shared.books[b.id].selected[0] == this.me.id) {
-                            console.log("Book selected by me. My ID:", this.me.id);
-                            b.strokeColorMe = this.me.color;
+                }
+
+                // If book is flagged as selected find out which player should have control
+                else if (this.shared.books[b.id].selected[0] != "") {
+
+                    // If trackObjectsWithHost set to true, host does all tracking
+                    if (trackObjectsWithHost) {
+
+                        // Only the host should resolve who has selected book
+                        if (this.isHost && (this.shared.books[b.id].selected[1] == "")) {
+                            this.shared.books[b.id].selected[1] = "yes";
+                            this.shared.updateCount += 1;
                         }
-                        else {
-                            console.log("Book selected by another player. Their ID:", this.shared.books[b.id].selected[0]);
+
+                        // After resolving player control (selected[1] -> 1), set book display properties and physics
+                        if (this.shared.books[b.id].selected[1] == "yes") {
+                            if (this.shared.books[b.id].selected[0] == this.me.id) {
+                                console.log("Book selected by me. My ID:", this.me.id);
+                                b.strokeColorMe = validColor(this.me.color);
+                            }
+                            else {
+                                console.log("Book selected by another player. Their ID:", this.shared.books[b.id].selected[0]);
+                                if (this.selectedBook != null) {
+                                    if (this.selectedBook.id == b.id) { this.selectedBook = null; }
+                                }
+                                b.grabbable = false;
+                                b.grabbedByOther = true;
+                                b.strokeColorOther = validColor(this.shared.books[b.id].selected[2]);
+                            }
+                        }
+                    }
+
+                    // If trackObjectsWithHost set to false, everyone tries to modify "shared" and whoever wins gets control
+                    else {
+
+                        let pid = this.shared.books[b.id].selected[0];
+
+                        if (pid == this.me.id) {
+                            console.log("Book " + b.id + " selected by me. My ID:", this.me.id);
+                            b.strokeColorMe = validColor(this.shared.books[b.id].selected[2]);
+                        }
+                        else if (typeof pid === 'string' || pid instanceof String) {
+                            console.log("Book " + b.id + " selected by another player. Their ID:", this.shared.books[b.id].selected[0]);
                             if (this.selectedBook != null) {
                                 if (this.selectedBook.id == b.id) { this.selectedBook = null; }
                             }
                             b.grabbable = false;
                             b.grabbedByOther = true;
-                            b.strokeColorOther = this.shared.books[b.id].selected[2];
+                            b.strokeColorOther = validColor(this.shared.books[b.id].selected[2]);
                         }
-                    }
-                }
-                // If book flagged as deselected, free it up so anyone can grab it
-                else if (this.shared.books[b.id].selected[0] == "") {
-                    if (b.grabbedByOther) {
-                        console.log("Book deselected");
-                        b.grabbable = true;
-                        b.grabbedByOther = false;
+                        else {
+                            //console.log{ "Player id not recognized" };
+                        }
                     }
                 }
             }
@@ -155,6 +191,13 @@ class LibraryManager {
     }
 }
 
+
+function validColor(strColor) {
+    const s = new Option().style;
+    s.color = strColor;
+    if (s.color == '') { return '#ffffff'; }
+    return strColor;
+}
 
 function generatePatron(i) {
     let bookLength = getRandomInt(3);

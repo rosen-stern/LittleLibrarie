@@ -1,7 +1,7 @@
 import { Book } from './book.js';
 import { Patron } from './patron.js';
 import { LibraryManager } from './manager.js'
-import { me, guests, showCursors, updateMyCursorPosition } from './cursors.js';
+import { me, guests, showCursors, updateMyCursorPosition, cursorSetup } from './cursors.js';
 
 
 // load the shared object
@@ -36,11 +36,7 @@ ground.width = 660;
 ground.physics = STATIC;
 
 
-// Manage books, patrons, and (some parts of) GUI
-
-let libManager = new LibraryManager(shared, p5party.isHost(), me);
-libManager.requestsBox.position(20, 40);
-libManager.requestsBox.size(316, 500);
+let libManager = null;
 
 
 // Game mechanics
@@ -54,6 +50,19 @@ canvas.addEventListener("pointerdown", (e) => {
   shared.y = e.offsetY;
 
 });
+
+
+q5.setup = function () {
+
+    cursorSetup()
+
+    // Manage books, patrons, and (some parts of) GUI
+    libManager = new LibraryManager(shared, p5party.isHost(), me);
+    libManager.requestsBox.position(20, 40);
+    libManager.requestsBox.size(316, 500);
+
+
+}
 
 
 q5.update = function () {

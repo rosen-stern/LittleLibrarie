@@ -83,9 +83,9 @@ class Book extends class { constructor() { return new Sprite(); } } {
 		this.checkOut = function () {
 			console.log("Checking out book")
 			this.grabbable = false;
+			this.physicsType = 'STATIC';
 			this.x = -4000;
 			this.y = -4000;
-			this.physicsType = 'STATIC';
 		}
 
 	}

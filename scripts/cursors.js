@@ -1,5 +1,5 @@
 import { room } from './server-connection.js';
-export { me, guests, showCursors, updateMyCursorPosition };
+export { me, guests, showCursors, updateMyCursorPosition, cursorSetup };
 
 
 
@@ -17,18 +17,18 @@ var guestsNumber = guests.length;
 
 
 
-q5.setup = function () {
+function cursorSetup() {
   // me.id = localStorageID;
   // me.screenName = "guest #" + me.id.substring(0, 4);
   // me.color = "#298fc2";
 
 
   if (!localStorageScreenName || !localStorageColor) {
-  window.location.replace("index.html"+"?room="+room);
+    window.location.replace("index.html" + "?room=" + room);
   }
   me.id = localStorageID;
-    me.screenName = localStorageScreenName;
-    me.color = localStorageColor;
+  me.screenName = localStorageScreenName;
+  me.color = localStorageColor;
 
 
 }
