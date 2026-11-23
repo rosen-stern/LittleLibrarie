@@ -2,6 +2,7 @@ import { Book } from './book.js';
 import { Patron } from './patron.js';
 import { LibraryManager } from './manager.js'
 import { me, guests, showCursors, updateMyCursorPosition, cursorSetup } from './cursors.js';
+import { LevelManager } from './level.js'
 
 
 // load the shared object
@@ -9,34 +10,13 @@ import { me, guests, showCursors, updateMyCursorPosition, cursorSetup } from './
 // if there are no clients already connected to the room
 const shared = await p5party.loadShared("shared", { x: 100, y: 100, books:[], patrons:[], updateCount:0 });
 
-// Set up canvas and world
 
-await Canvas();
-world.gravity.y = 10;
+// Set up canvas and objects
 
-let ball = new Sprite();
-ball.diameter = 50;
-ball.img = ':)';
-
-let groundA = new Sprite();
-groundA.x = -120;
-groundA.width = 220;
-groundA.rotation = 30;
-groundA.physics = STATIC;
-
-let groundB = new Sprite();
-groundB.x = 120;
-groundB.width = 220;
-groundB.rotation = -30;
-groundB.physics = STATIC;
-
-let ground = new Sprite();
-ground.y = 240;
-ground.width = 660;
-ground.physics = STATIC;
-
+await Canvas(1920, 1080);
 
 let libManager = null;
+let lvlManager = null;
 
 
 // Game mechanics
@@ -54,31 +34,33 @@ canvas.addEventListener("pointerdown", (e) => {
 
 q5.setup = function () {
 
-    cursorSetup()
+  cursorSetup()
 
-    // Manage books, patrons, and (some parts of) GUI
-    libManager = new LibraryManager(shared, p5party.isHost(), me);
-    libManager.requestsBox.position(20, 40);
-    libManager.requestsBox.size(316, 500);
+  lvlManager = new LevelManager();
+
+  // Manage books, patrons, and (some parts of) GUI
+  libManager = new LibraryManager(shared, p5party.isHost(), me);
+  libManager.requestsBox.position(20, 40);
+  libManager.requestsBox.size(316, 500);
 
 
 }
 
 
 q5.update = function () {
-	background('skyblue');
-	text('click to jump!', 0, -50);
+  background('skyblue');
+  text('click to jump!', 0, -50);
 
-    if(shared.x != currentx || shared.y != currenty){
-    ball.vel.y = -5;
+  if (shared.x != currentx || shared.y != currenty) {
+    lvlManager.ball.vel.y = -5;
 
     currentx = shared.x;
     currenty = shared.y;
-    }
+  }
 
-	showCursors();
+  showCursors();
 
-    libManager.update();
+  libManager.update();
 };
 
 
