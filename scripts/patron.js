@@ -7,6 +7,7 @@ class Patron {
     mousedownWhileHover = false;
     manager = null;
     fulfilled = false;
+    bookID = -1;
     constructor(ID, imageString, request, data) {
         this.ID = ID;
         this.imageString = imageString;
@@ -57,9 +58,10 @@ class Patron {
         this.element.appendChild(createEl('div', this.request));
         return this.element;
     }
-    fulfillRequest() {
+    fulfillRequest(bookID) {
         this.element.style.backgroundColor = '#FFFFFF40';
         this.fulfilled = true;
+        this.bookID = bookID;
         console.log("Patron request fulfilled")
     }
 }

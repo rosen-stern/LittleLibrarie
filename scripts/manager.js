@@ -107,6 +107,13 @@ class LibraryManager {
         }
     }
     update() {
+        for (var i in this.patrons) {
+            let p = this.patrons[i];
+            if (p.fulfilled && (this.shared.patrons[p.ID].fulfilled == -1)) { 
+                this.shared.patrons[p.ID].fulfilled = p.bookID; 
+                this.shared.updateCount += 1;
+            }
+        }
         if (this.shared.updateCount > this.lastUpdateCount) {
             this.lastUpdateCount = this.shared.updateCount;
             for (var i in this.patrons) {
