@@ -14,24 +14,28 @@
 
 </head>
 
-<body>
+<body id="start-menu-background">
 
-  <h1>Little Librarie</h1>
+
 
   <div id="new-player-popup">
+
+      <h1>Little Librarie</h1>
     
     <div id="new-player-form">
-      <label for="room">Room:</label>
-      <input type="text" id="room" name="room" value=""/>    
+      <div><label for="room">Room name</label>
+      <input type="text" id="room" name="room" value=""/>    </div>
 
-      <label for="screenName">Screen Name:</label>
-      <input type="text" id="screenName" name="screenName" value="" />
+      <div><label for="screenName">Player name</label>
+      <input type="text" id="screenName" name="screenName" value="" /></div>
 
-  <label for="playerColor">Player Color:</label>
-  <input type="color" id="playerColor" name="playerColor" value="#e66465" />
+  <div><label for="playerColor">Player color</label>
+  <input type="color" id="playerColor" name="playerColor" value="#e66465" /></div>
+
+</div>
 
 <button onclick="joinRoom()">Join Room</button>
-</div>
+
 </div>
 
 </body>
