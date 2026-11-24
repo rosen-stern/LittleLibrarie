@@ -41,15 +41,16 @@ async function checkGuestNumber() {
 
 
 async function showCursors() {
-  strokeWeight(0);
+
 
  await checkGuestNumber();
 
 
   // draw each guests cursor
   for (const p of guests) {
-
+  
     if (p.id != me.id) {
+      strokeWeight(0);
       fill('white');
       rect(p.x - textWidth(p.screenName) / 2 - 10, p.y + 15, textWidth(p.screenName) + 20, 15);
 
@@ -64,7 +65,7 @@ async function showCursors() {
       ellipse(p.x, p.y, 15, 15);
     }
   }
-
+  strokeWeight(1);
   fill(me.color);
   ellipse(me.x, me.y, 15, 15);
 
