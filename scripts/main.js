@@ -13,7 +13,7 @@ const shared = await p5party.loadShared("shared", { x: 100, y: 100, books:[], pa
 
 // Set up canvas and objects
 
-await Canvas(1920, 1080);
+await Canvas(1400, 700);
 
 let libManager = null;
 let lvlManager = null;
