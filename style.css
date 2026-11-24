@@ -42,12 +42,12 @@ h1 {
     justify-content: space-evenly;
     align-items: center;
 
-    & h1{
+    & h1 {
         padding: 0px;
         margin: 0px;
     }
 
-        & button{
+    & button {
         width: 120px;
         height: 40px;
         padding: 5px;
@@ -95,11 +95,36 @@ h1 {
 
 #start-menu-background {
     background: url("https://images.pexels.com/photos/5102221/pexels-photo-5102221.jpeg");
-    
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-position: center;
 
-  background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+
+    background-size: cover;
+
+}
+
+
+#gameplay-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    & h1 {
+        text-align: center;
+        width: fit-content;
+    }
+
+    & main {
+        border-radius: 5px;
+        overflow: hidden;
+        padding: 0px;
+        margin: 0px;
+        box-sizing: border-box;
+        height: 600px;
+
+        border: 1px solid black;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
 
 }
