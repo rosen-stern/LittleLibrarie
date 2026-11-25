@@ -44,12 +44,8 @@ class Patron {
         img.classList.add("patron-avatar")
         this.element.appendChild(img);
 
-        let speech_bubble = createEl('div','');
+        let speech_bubble = createEl('div', '');
         speech_bubble.classList.add("speech-bubble");
-
-        let arrow = createEl('div','');
-        arrow.classList.add("arrow");
-        speech_bubble.appendChild(arrow);
 
         let request_div = createEl('div', this.request);
         request_div.classList.add("request");
@@ -57,12 +53,22 @@ class Patron {
 
         this.element.appendChild(speech_bubble);
 
+        this.element.classList.add("show")
+
         return this.element;
     }
     fulfillRequest(bookID) {
-        this.element.classList.add("fulfilled");
+
+
+        this.element.classList.remove('show');
+        this.element.addEventListener('transitionend', () => {
+            this.element.classList.add('fulfilled');
+            this.element.remove();
+        }, { once: true });
+
         this.fulfilled = true;
         this.bookID = bookID;
+
         console.log("Patron request fulfilled")
     }
 }

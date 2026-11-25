@@ -134,7 +134,7 @@ h1 {
 
 .patron-request {
     font-size: 18px;
-    display: flex;
+    /* display: flex; */
     align-items: center;
     justify-content: flex-start;
     /* background-color: white; */
@@ -143,8 +143,34 @@ h1 {
     min-width: 300px;
     gap: 10px;
 
-    &:hover:not(.fulfilled) .request{
-        opacity: .5;
+    display: flex;
+    opacity: 0;
+    transition: opacity 250ms ease-in, margin-top 1s;
+
+
+
+    &:first-child {
+        margin-top: -38px;
+    }
+
+    &:empty {
+        padding-top: 0px;
+    }
+
+    &.show {
+        /* https://dev.to/nicm42/fading-in-and-fading-out-with-css-transitions-3lc1 */
+        opacity: 1;
+        transition-delay: 10ms;
+    }
+
+
+    &.fulfilled {
+    }
+
+    &:hover .request {
+        /* opacity: .5; */
+        filter: invert();
+        color: blue;
     }
 
 
@@ -194,10 +220,6 @@ h1 {
         border-left: 1px solid black;
     }
 
-    &.fulfilled .request {
-        opacity: .3;
-    }
-
 }
 
 .patron-requests-wrapper {
@@ -210,4 +232,8 @@ h1 {
     flex-direction: column;
     align-content: flex-start;
     /* border: 1px solid black; */
+
+
+    padding-top: 40px;
+    transition: padding-top 1s;
 }
