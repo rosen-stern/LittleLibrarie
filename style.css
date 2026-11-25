@@ -128,3 +128,86 @@ h1 {
     }
 
 }
+
+
+
+
+.patron-request {
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    /* background-color: white; */
+    color: #808080;
+    border-radius: 8px;
+    min-width: 300px;
+    gap: 10px;
+
+    &:hover:not(.fulfilled) .request{
+        opacity: .5;
+    }
+
+
+    & .speech-bubble {
+        display: flex;
+        gap: 0px;
+    }
+
+    /* Speech bubble design
+    Source - https://stackoverflow.com/a/45012302
+    Posted by Chandra Shekhar, modified by community. See post 'Timeline' for change history
+    Retrieved 2026-11-24, License - CC BY-SA 3.0
+    */
+    & .request {
+        position: relative;
+        min-height: 50px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 200px;
+        padding: 10px;
+        border-radius: 5px;
+        background: white;
+        color: black;
+
+        text-align: center;
+        vertical-align: middle;
+
+
+
+        border: 1px solid black;
+    }
+
+
+    .request:before {
+        content: "";
+        position: absolute;
+        top: 20px;
+        left: -12px;
+        margin: auto;
+        height: 20px;
+        width: 20px;
+        border: 1px solid #fff;
+        transform: rotate(45deg);
+        background-color: #fff;
+        border-bottom: 1px solid black;
+        border-left: 1px solid black;
+    }
+
+    &.fulfilled .request {
+        opacity: .3;
+    }
+
+}
+
+.patron-requests-wrapper {
+    display: flex;
+    width: fit-content;
+    margin: 0px;
+    padding: 0px;
+    gap: 10px;
+
+    flex-direction: column;
+    align-content: flex-start;
+    /* border: 1px solid black; */
+}
