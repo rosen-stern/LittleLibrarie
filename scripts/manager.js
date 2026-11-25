@@ -272,10 +272,6 @@ function generateBooks(shared, n=-1) {
 
 function requestsContainer() {
     let requests = createEl('div', '');
-    requests.style.display = 'flex';
-    requests.style.flexWrap = 'wrap';
-    requests.style.alignContent = 'start';
-    requests.style.justifyContent = 'center';
-    requests.style.border = '2px solid #FFFFFF20';  // Remove this after debugging?
+    requests.classList.add("patron-requests-wrapper");
     return requests;
 }

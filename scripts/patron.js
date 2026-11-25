@@ -18,26 +18,14 @@ class Patron {
     }
     display() {
         let el = createEl('div', '');
-        el.size(300, 100);
-        el.style.fontSize = '18px';
-        el.style.display = 'flex';
-        el.style.alignItems = 'center';
-        el.style.justifyContent = 'start';
-        el.style.backgroundColor = 'white';
-        el.style.color = '#808080';
-        el.style.borderRadius = '8px';
-        el.style.margin = '6px';
-        el.style.padding = '0 0 0 8px';
-        el.style.minWidth = '300px';
+        el.classList.add("patron-request");
         el.addEventListener('mouseover', () => {
             if (this.fulfilled) { return; }
-            else { el.style.backgroundColor = 'cyan'; }
             this.mouseover = true;
             this.manager.checkForBook();
         });
         el.addEventListener('mouseout', () => {
             if (this.fulfilled) { return; }
-            else { el.style.backgroundColor = 'white'; }
             this.mouseover = false;
             this.mousedownWhileHover = false;
             this.manager.clearAnySuggested();
@@ -53,15 +41,34 @@ class Patron {
         });
         this.element = el;
         let img = createImg('assets/avatar.png');
-        img.style.margin = '16px';
+        img.classList.add("patron-avatar")
         this.element.appendChild(img);
-        this.element.appendChild(createEl('div', this.request));
+
+        let speech_bubble = createEl('div', '');
+        speech_bubble.classList.add("speech-bubble");
+
+        let request_div = createEl('div', this.request);
+        request_div.classList.add("request");
+        speech_bubble.appendChild(request_div);
+
+        this.element.appendChild(speech_bubble);
+
+        this.element.classList.add("show")
+
         return this.element;
     }
     fulfillRequest(bookID) {
-        this.element.style.backgroundColor = '#FFFFFF40';
+
+
+        this.element.classList.remove('show');
+        this.element.addEventListener('transitionend', () => {
+            this.element.classList.add('fulfilled');
+            this.element.remove();
+        }, { once: true });
+
         this.fulfilled = true;
         this.bookID = bookID;
+
         console.log("Patron request fulfilled")
     }
 }
