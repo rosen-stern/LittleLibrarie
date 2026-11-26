@@ -3,7 +3,8 @@ import { Book, genres, bookLengths, bookHeights } from './book.js';
 export { LibraryManager, requestsContainer }
 
 
-let trackObjectsWithHost = false;
+let trackObjectsWithHost = true;
+let resolveObjectsWithHost = false;
 
 
 class LibraryManager {
@@ -103,10 +104,12 @@ class LibraryManager {
             this.shared.books[this.selectedBook.id].selected = ["", "", ""];
             this.shared.updateCount += 1;
             console.log("update count:", this.shared.updateCount);
+            console.log("Book deselected by me");
             this.selectedBook = null;
         }
     }
     update() {
+        // If request fulfilled locally but doesn't show up in shared, try updating shared again
         for (var i in this.patrons) {
             let p = this.patrons[i];
             if (p.fulfilled && (this.shared.patrons[p.ID].fulfilled == -1)) { 
@@ -114,6 +117,36 @@ class LibraryManager {
                 this.shared.updateCount += 1;
             }
         }
+
+        // If host is tracking physics, they must broadcast book positions continuously
+        // and guests must reposition books based on host's broadcasts
+        if (trackObjectsWithHost) {
+
+            for (var i in this.books) {
+
+                let b = this.books[i];
+
+                if (this.isHost && !b.grabbedByOther) {
+                    this.shared.books[b.id].x = b.x;
+                    this.shared.books[b.id].y = b.y;
+                    this.shared.books[b.id].rotation = b.rotation;
+                }
+
+                //else if (!this.isHost && b.grabbed && !b.grabbedByOther) {
+                //    this.shared.books[b.id].x = b.x;
+                //    this.shared.books[b.id].y = b.y;
+                //    this.shared.books[b.id].rotation = b.rotation;
+                //}
+
+                else {
+                    b.x = this.shared.books[b.id].x;
+                    b.y = this.shared.books[b.id].y;
+                    b.rotation = this.shared.books[b.id].rotation;
+                }
+            }
+        }
+
+        // For all other actions/events, only update when updateCount increases
         if (this.shared.updateCount > this.lastUpdateCount) {
             this.lastUpdateCount = this.shared.updateCount;
             for (var i in this.patrons) {
@@ -134,17 +167,18 @@ class LibraryManager {
                 // If book flagged as deselected, free it up so anyone can grab it
                 if (this.shared.books[b.id].selected[0] == "") {
                     if (b.grabbedByOther) {
-                        console.log("Book deselected");
+                        console.log("Book deselected by other");
                         b.grabbable = true;
                         b.grabbedByOther = false;
                     }
+
                 }
 
                 // If book is flagged as selected find out which player should have control
                 else if (this.shared.books[b.id].selected[0] != "") {
 
                     // If trackObjectsWithHost set to true, host does all tracking
-                    if (trackObjectsWithHost) {
+                    if (resolveObjectsWithHost) {
 
                         // Only the host should resolve who has selected book
                         if (this.isHost && (this.shared.books[b.id].selected[1] == "")) {
@@ -245,29 +279,30 @@ function generateBook(i) {
         title: "", author: "",
         genre: genres[getRandomInt(4)],
         x: 10, y: -80,
+        rotation: 0,
         selected: false,
         checkedout: false
     }
 }
 
 function generateBooks(shared, n=-1) {
-    if (n == -1) {
-        shared.books = {
-            1: { id: 1, length: 20, height: 50, title: "", author: "", genre: "green", x: 10, y: -20, selected: ["", "", ""], checkedout: false },
-            2: { id: 2, length: 15, height: 40, title: "", author: "", genre: "red", x: 0, y: 0, selected: ["", "", ""], checkedout: false }
-        }
+  if (n == -1) {
+    shared.books = {
+      1: { id: 1, length: 20, height: 50, title: "", author: "", genre: "green", x: 10, y: -20, rotation: 0, selected: ["", "", ""], checkedout: false },
+      2: { id: 2, length: 15, height: 40, title: "", author: "", genre: "red", x: 0, y: 0, rotation: 0, selected: ["", "", ""], checkedout: false }
     }
-    else {
-        let total_keys = Object.keys(shared.books).length;
-        if (total_keys == 0) {
-            shared.books = {};
-        }
-        for (let i = total_keys + 1; i < total_keys + n + 1; i++) {
-            shared.books[i] = generateBook(i);
-            console.log("Generated book:", shared.books[i]);
-        }
+  }
+  else {
+    let total_keys = Object.keys(shared.books).length;
+    if (total_keys == 0) {
+      shared.books = {};
+    }
+    for (let i = total_keys + 1; i < total_keys + n + 1; i++) {
+      shared.books[i] = generateBook(i);
+      console.log("Generated book:", shared.books[i]);
+    }
 
-    }
+  }
 }
 
 function requestsContainer() {

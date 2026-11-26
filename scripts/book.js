@@ -74,6 +74,7 @@ class Book extends class { constructor() { return new Sprite(); } } {
 			else {
 				if (this.grabbed == true) { this.manager.deselect(); }
 				this.grabbed = false;
+			    if (!this.manager.isHost) { this.physics = STATIC; }
 			}
 		};
 
@@ -86,6 +87,15 @@ class Book extends class { constructor() { return new Sprite(); } } {
 			this.physicsType = 'STATIC';
 			this.x = -4000;
 			this.y = -4000;
+		}
+
+		this.setManager = function (manager) {
+			this.manager = manager;
+			if (!this.manager.isHost) {
+				// this.grabbable = false;
+				// this.physicsType = 'STATIC';
+				this.physics = STATIC;
+			}
 		}
 
 	}
