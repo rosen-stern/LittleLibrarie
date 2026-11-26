@@ -33,7 +33,7 @@ class LevelManager {
     groundB.strokeWeight = 1;
 
     let ground = new Sprite();
-    ground.y = 540;
+    ground.y = 300;
     ground.width = 1920 + 48;
     ground.physics = STATIC;
     ground.stroke = 'black';
@@ -42,14 +42,14 @@ class LevelManager {
     let wallA = new Sprite();
     wallA.w = 40;
     wallA.h = 3240;
-    wallA.x = -960 - 24;
+    wallA.x = -700 - 24;
     wallA.y = -1080;
     wallA.physics = STATIC;
 
     let wallB = new Sprite();
     wallB.w = 40;
     wallB.h = 3240;
-    wallB.x = 960 + 24;
+    wallB.x = 700 + 24;
     wallB.y = -1080;
     wallB.physics = STATIC;
 
